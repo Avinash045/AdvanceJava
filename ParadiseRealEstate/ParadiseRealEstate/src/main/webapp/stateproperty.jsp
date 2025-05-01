@@ -1,0 +1,139 @@
+<%@include file="config.jsp"%>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="Real Estate PHP">
+		<meta name="keywords" content="">
+		<meta name="author" content="Unicoder">
+		<link rel="shortcut icon" href="images/favicon.ico">
+		<link href="https://fonts.googleapis.com/css?family=Muli:400,400i,500,600,700&amp;display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Comfortaa:400,700" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css">
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="css/layerslider.css">
+		<link rel="stylesheet" type="text/css" href="css/color.css" id="color-change">
+		<link rel="stylesheet" type="text/css" href="css/owl.carousel.min.css">
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="fonts/flaticon/flaticon.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<title>Paradise Real Estate</title>
+	</head>
+
+	<body>
+		<div id="page-wrapper">
+    		<div class="row">
+    			<%@include file="header.jsp"%> 
+		        <div class="full-row">
+        		    <div class="container">
+                		<div class="row">
+							<div class="col-lg-8">
+                		        <div class="row">
+<%
+	String city = request.getParameter("city");
+	ResultSet query = con.createStatement().executeQuery("SELECT property.*, user.uname,user.utype,user.uimage FROM `property`,`user` WHERE property.uid=user.uid and city like '%"+city+"%'");
+
+	while(query.next()) {
+%>
+									
+                            		<div class="col-md-6">
+                                		<div class="featured-thumb hover-zoomer mb-4">
+                                    		<div class="overlay-black overflow-hidden position-relative"> 
+                                    			<img src="assets/img/property/<%=query.getString(19)%>" alt="pimage">
+	                                        	<div class="sale bg-success text-white">For <%=query.getString(6)%></div>
+    	                                    	<div class="price text-primary text-capitalize">&#8377; <%=query.getString(14)%> <span class="text-white"><%=query.getString(13)%> Sqft</span></div>
+                                     		</div>
+		                                    <div class="featured-thumb-data shadow-one">
+		                                        <div class="p-4">
+		                                            <h5 class="text-secondary hover-text-success mb-2 text-capitalize"><a href="propertydetail.jsp?pid=<%=query.getString(1)%>"><%=query.getString(2)%></a></h5>
+		                                            <span class="location text-capitalize"><i class="fas fa-map-marker-alt text-success"></i> <%=query.getString(15)%></span> 
+		                                      	</div>
+		                                        <div class="px-4 pb-4 d-inline-block w-100">
+		                                            <div class="float-left text-capitalize"><i class="fas fa-user text-success mr-1"></i>By : <%=query.getString("uname")%></div>
+		                                            <div class="float-right"><i class="far fa-calendar-alt text-success mr-1"></i> <%=query.getString("date")%></div>
+		                                        </div>
+		                                    </div>
+		                                </div>
+        		                    </div>
+<%
+	}
+%>        		                    
+		        				</div>
+        		    		</div>
+					
+                    		<div class="col-lg-4">
+                        		<div class="sidebar-widget">
+                            		<h4 class="double-down-line-left text-secondary position-relative pb-4 my-4">Installment Calculator</h4>
+									<form class="d-inline-block w-100" action="calc.jsp" method="post">
+                            			<label class="sr-only">Property Amount</label>
+                            			<div class="input-group mb-2 mr-sm-2">
+                                			<div class="input-group-prepend">
+                                    			<div class="input-group-text">&#8377;</div>
+                                			</div>
+                                			<input type="number" min=0 class="form-control" name="amount" placeholder="Property Price" required>
+                            			</div>
+			                            <label class="sr-only">Month</label>
+                            			<div class="input-group mb-2 mr-sm-2">
+                                			<div class="input-group-prepend">
+                                    			<div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                                			</div>
+                                			<input type="number" min=1 class="form-control" name="month" placeholder="Duration Year" required>
+                            			</div>
+                            			<label class="sr-only">Interest Rate</label>
+                            			<div class="input-group mb-2 mr-sm-2">
+                                			<div class="input-group-prepend">
+                                    			<div class="input-group-text">%</div>
+                                			</div>
+                                			<input type="number" min=1 class="form-control" name="interest" placeholder="Interest Rate">
+                            			</div>
+                            			<button type="submit" value="submit" name="calc" class="btn btn-danger mt-4">Calculate Installment</button>
+                        			</form>
+                        		</div>
+                        
+                        		<div class="sidebar-widget mt-5">
+                            		<h4 class="double-down-line-left text-secondary position-relative pb-4 mb-4">Recently Added Property</h4>
+                            		<ul class="property_list_widget">
+<%
+	query = con.createStatement().executeQuery("SELECT * FROM `property` ORDER BY date DESC LIMIT 6");
+	while(query.next()){
+%>							
+	                                	<li> 
+	                                		<img src="assets/img/property/<%=query.getString(19)%>" alt="pimage">
+                                    		<h6 class="text-secondary hover-text-success text-capitalize"><a href="propertydetail.jsp?pid=<%=query.getString(1)%>"><%=query.getString(2)%></a></h6>
+											<span class="font-14"><i class="fas fa-map-marker-alt icon-success icon-small"></i> <%=query.getString(15)%></span>
+										</li>
+<%
+	}
+%>										
+									</ul>
+                        		</div>
+                    		</div>
+						</div>
+            		</div>
+        		</div>
+
+        		<%@include file="footer.jsp"%>
+        		<a href="#" class="bg-secondary text-white hover-text-secondary" id="scroll"><i class="fas fa-angle-up"></i></a> 
+		    </div>
+		</div>
+
+		<script src="js/jquery.min.js"></script> 
+		<script src="js/greensock.js"></script> 
+		<script src="js/layerslider.transitions.js"></script> 
+		<script src="js/layerslider.kreaturamedia.jquery.js"></script> 
+		<script src="js/popper.min.js"></script> 
+		<script src="js/bootstrap.min.js"></script> 
+		<script src="js/owl.carousel.min.js"></script> 
+		<script src="js/tmpl.js"></script> 
+		<script src="js/jquery.dependClass-0.1.js"></script> 
+		<script src="js/draggable-0.1.js"></script> 
+		<script src="js/jquery.slider.js"></script> 
+		<script src="js/wow.js"></script> 
+		<script src="js/custom.js"></script>
+	</body>
+</html>
